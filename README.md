@@ -43,6 +43,11 @@ Pour la suite du projet, nous vous conseillons d'importer le backend dans votre 
 ## Le data set
 Les données sont des données qui proviennent de imdb, le dataset est disponible ici : http://bit.ly/imdbdataset
 
+Importer les données dans Neo4J:
+```BASH
+neo4j-import --into data/databases/graph.db --nodes:Actor imdb-data/actors.csv --nodes:Movie imdb-data/movies.csv --relationships imdb-data/roles.csv --quote "\""
+```
+
 ## Votre mission
 Le site a été bouchonné (cf `TODO`), vous devez effectuer les tâches suivantes :
 * Importer les données dans Neo4J à l'aide de l'outil d'import : [`ìmport-tool`](http://neo4j.com/docs/operations-manual/current/tutorial/import-tool/).
