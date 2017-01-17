@@ -17,9 +17,5 @@ dependencies {
     compile 'io.searchbox:jest:2.0.4'
     compile 'redis.clients:jedis:2.9.0'
     compile 'org.mongodb:mongodb-driver:3.4.1'
-
-    // https://mvnrepository.com/artifact/redis.clients/jedis
-    compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
-
     testCompile 'junit:junit:4.12'
 }
