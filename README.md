@@ -54,6 +54,12 @@ Les données des dernières recherches s'effectue à l'aide d'une base redis à 
 redis-server
 ```
 
+### Base MongoDB
+Les fiches acteurs sont stockés dans une base mongoDB initialisée par la commande:
+```BASH
+mongoimport --db bacon --collection actors --type csv --headerline --file imdb-data/actors.csv
+```
+
 ## Votre mission
 Le site a été bouchonné (cf `TODO`), vous devez effectuer les tâches suivantes :
 * Importer les données dans Neo4J à l'aide de l'outil d'import : [`ìmport-tool`](http://neo4j.com/docs/operations-manual/current/tutorial/import-tool/).
