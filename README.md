@@ -48,6 +48,12 @@ Importer les données dans Neo4J:
 neo4j-import --into data/databases/graph.db --nodes:Actor imdb-data/actors.csv --nodes:Movie imdb-data/movies.csv --relationships imdb-data/roles.csv --quote "\""
 ```
 
+## Base Redis
+Les données des dernières recherches s'effectue à l'aide d'une base redis à l'adresse localhost:6379
+```BASH
+redis-server
+```
+
 ## Votre mission
 Le site a été bouchonné (cf `TODO`), vous devez effectuer les tâches suivantes :
 * Importer les données dans Neo4J à l'aide de l'outil d'import : [`ìmport-tool`](http://neo4j.com/docs/operations-manual/current/tutorial/import-tool/).
