@@ -4,6 +4,8 @@ import com.serli.oracle.of.bacon.repository.ElasticSearchRepository;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Bulk;
 import io.searchbox.core.Index;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,14 +32,17 @@ public class CompletionLoader {
 
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(inputFilePath))) {
 
-                List<Index> currentChunk = new ArrayList<>();
+            // Parse CSV file into reading object
+            CSVParser csvParser = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(bufferedReader);
 
-                bufferedReader
-                    .lines()
-                    .forEach(line -> {
+            List<Index> currentChunk = new ArrayList<>();
 
+            // Insert records in ElasticSearch by chunk of 50000 elements
+            csvParser
+                    .getRecords()
+                    .forEach(record -> {
                         Map<String, String> source = new LinkedHashMap<>();
-                        source.put("name", line);
+                        source.put("name", record.get("name:ID"));
                         currentChunk.add(new Index.Builder(source).build());
 
                         if(currentChunk.size() == 50000) {
@@ -52,6 +57,11 @@ public class CompletionLoader {
         System.out.println("Inserted total of " + count.get() + " actors");
     }
 
+    /**
+     * Insert a collection of indexes in ElasticSearch
+     * @param client ElasticSearch client
+     * @param currentChunk collection of indexes
+     */
     private static void insertChunk(JestClient client, List<Index> currentChunk) {
         try {
             client.execute(new Bulk.Builder()
