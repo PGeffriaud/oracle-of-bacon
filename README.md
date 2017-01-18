@@ -1,4 +1,5 @@
 # Orcacle of Bacon
+Group names: Pierre GEFFRIAUD - Yann ROLLAND (FIL A3)
 
 ## Présentation
 
