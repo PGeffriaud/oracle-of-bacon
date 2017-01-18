@@ -8,8 +8,10 @@ import net.codestory.http.annotations.Get;
 import net.codestory.http.payload.Payload;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class APIEndPoint {
     private final Neo4JRepository neo4JRepository;
@@ -33,12 +35,14 @@ public class APIEndPoint {
     }
 
     @Get("suggest?q=:searchQuery")
-    public List<String> getActorSuggestion(String searchQuery) {
-        return Arrays.asList("Niro, Chel",
-                "Senanayake, Niro",
-                "Niro, Juan Carlos",
-                "de la Rua, Niro",
-                "Niro, Simão");
+    public Payload getActorSuggestion(String searchQuery) {
+        try {
+            List<String> actorsSuggests = elasticSearchRepository.getActorsSuggests(searchQuery);
+            return new Payload(actorsSuggests);
+        } catch (IOException e) {
+            Random r = new Random();
+            return new Payload(String.format("Oh snap ! It crashes. <img src=\"http://placekitten.com/g/%d/%d\" />", r.nextInt(300)+200, r.nextInt(300)+200)).withCode(500);
+        }
     }
 
     @Get("last-searches")

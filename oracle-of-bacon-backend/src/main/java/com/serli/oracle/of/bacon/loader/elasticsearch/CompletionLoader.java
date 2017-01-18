@@ -1,9 +1,12 @@
 package com.serli.oracle.of.bacon.loader.elasticsearch;
 
+import com.google.gson.JsonObject;
 import com.serli.oracle.of.bacon.repository.ElasticSearchRepository;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Bulk;
 import io.searchbox.core.Index;
+import io.searchbox.indices.CreateIndex;
+import io.searchbox.indices.mapping.PutMapping;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 
@@ -29,6 +32,9 @@ public class CompletionLoader {
 
         String inputFilePath = args[0];
         JestClient client = ElasticSearchRepository.createClient();
+
+        client.execute(new CreateIndex.Builder("bacon").build());
+        createMapping(client);
 
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(inputFilePath))) {
 
@@ -58,6 +64,24 @@ public class CompletionLoader {
     }
 
     /**
+     * Create ElasticSearch mapping in order to user suggestions
+     * @param client
+     */
+    private static void createMapping(JestClient client) throws IOException {
+        JsonObject name = new JsonObject();
+        name.addProperty("type", "text");
+
+        JsonObject properties = new JsonObject();
+        properties.add("name", name);
+
+        JsonObject actor = new JsonObject();
+        actor.add("properties", properties);
+
+        PutMapping putMapping = new PutMapping.Builder("bacon", "actor", actor.toString()).build();
+        System.err.println(client.execute(putMapping).getErrorMessage());
+    }
+
+    /**
      * Insert a collection of indexes in ElasticSearch
      * @param client ElasticSearch client
      * @param currentChunk collection of indexes
@@ -69,7 +93,7 @@ public class CompletionLoader {
                     .defaultType("actor")
                     .addAction(currentChunk)
                     .build());
-            System.out.println(count.addAndGet(currentChunk.size()));
+            System.out.println(count.addAndGet(currentChunk.size()) + " insertions");
         } catch (IOException e) {
             e.printStackTrace();
         }
